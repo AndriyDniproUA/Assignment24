@@ -1,6 +1,7 @@
 package com.sav.dbprocessor;
 
 import lombok.RequiredArgsConstructor;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,7 +17,6 @@ public class JdbcTemplate {
 
     //use for SELECT
     public <T> List<T> query(String sql, Object[] params, RowMapper<T> mapper) {
-        //System.out.println("in query WITH params");
         try {
             Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -24,25 +24,23 @@ public class JdbcTemplate {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
+            
             ResultSet rs = statement.executeQuery();
 
             List<T> result = new ArrayList<>();
             while (rs.next()) {
                 T o = mapper.map(rs);
-                //System.out.println(o);
                 result.add(o);
             }
-
             connection.close();
             return result;
-
         } catch (SQLException e) {
             return null;
         }
     }
 
     public <T> List<T> query(String sql, RowMapper<T> mapper) {
-        //System.out.println("in query without params");
+
         Object[] params = new Object[]{};
         return query(sql,params,mapper);
     }

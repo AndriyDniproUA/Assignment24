@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 
 @Data
 public class Director {
-    Long id;
+    Integer id;
     String name;
     String surname;
-    LocalDateTime birth_date;
+    LocalDateTime birthDate;
 }
 
 

@@ -24,55 +24,78 @@ public class Main {
 
         JdbcTemplate jdbc = new JdbcTemplate(dataSource);
 
-//        jdbc.update(
-//                "INSERT INTO directors (name, surname, birth_date)" +
-//                        " VALUES (?,?,?)",
-//                new Object[]{"Stephen", "Spielberg", LocalDateTime.parse("1954-01-01T00:00")}
-//        );
-
-        List<Director> directors = jdbc.query("SELECT name, surname, birth_date FROM directors",
+        List<Director> directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors",
                 (rs -> {
                     Director director = new Director();
-                    director.setId(rs.getLong("id"));
+                    director.setId(rs.getInt("id"));
                     director.setName(rs.getString("name"));
                     director.setSurname(rs.getString("surname"));
-                    director.setBirth_date(rs.getObject("birth_date", LocalDateTime.class));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
                     return director;
                 })
         );
 
-        directors = jdbc.query("SELECT name, surname, birth_date FROM directors WHERE name=?",
+        directors.stream()
+                .forEach(d -> System.out.println(d));
+
+        directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
                 new Object[]{"Stephen"},
                 (rs -> {
                     Director director = new Director();
-                    director.setId(rs.getLong("id"));
+                    director.setId(rs.getInt("id"));
                     director.setName(rs.getString("name"));
                     director.setSurname(rs.getString("surname"));
-                    director.setBirth_date(rs.getObject("birth_date", LocalDateTime.class));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
+                    return director;
+                })
+        );
+
+        System.out.println("******************************************************************************");
+        directors.stream()
+                .forEach(d -> System.out.println(d));
+
+
+        Director directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors",
+                (rs -> {
+                    Director director = new Director();
+                    director.setId(rs.getInt("id"));
+                    director.setName(rs.getString("name"));
+                    director.setSurname(rs.getString("surname"));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
                     //System.out.println(director);
                     return director;
                 })
         );
+        System.out.println("******************************************************************************");
+        System.out.println(directorOne);
 
 
+        directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
+                new Object[]{"Stephen"},
+                (rs -> {
+                    Director director = new Director();
+                    director.setId(rs.getInt("id"));
+                    director.setName(rs.getString("name"));
+                    director.setSurname(rs.getString("surname"));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
+                    //System.out.println(director);
+                    return director;
+                })
+        );
+        System.out.println("******************************************************************************");
+        System.out.println(directorOne);
 
-
-
-        directors.stream()
-                .forEach(d-> System.out.println(d));
-
-
-
+        jdbc.update(
+                "INSERT INTO directors (name, surname, birth_date) VALUES (?,?,?)",
+                new Object[]{"Stephen", "Spielberg", LocalDateTime.parse("1954-01-01T00:00")}
+        );
 
 
         //public <T> List<T> query(String sql, Object[] params, RowMapper<T> mapper)
         //public <T> List<T> query(String sql, RowMapper<T> mapper)
         //public<T> T queryOne(String sql, Object[] params, RowMapper<T> mapper)
         //public<T> T queryOne(String sql, RowMapper<T> mapper)
-
         //public void update(String sql, Object[] params)
         //public void update(String sql)
-
-
     }
 }

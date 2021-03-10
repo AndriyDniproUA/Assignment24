@@ -3,8 +3,8 @@ CREATE DATABASE films2;
 CREATE TABLE  directors(
 id SERIAL PRIMARY KEY,
 name VARCHAR(45) NOT NULL,
-surname VARCHAR(45) NOT NULL
-birth_date DATE);
+surname VARCHAR(45) NOT NULL,
+birth_date TIMESTAMP);
 
 CREATE TABLE films(
 id SERIAL PRIMARY KEY,
