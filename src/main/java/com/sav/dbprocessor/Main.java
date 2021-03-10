@@ -24,6 +24,7 @@ public class Main {
 
         JdbcTemplate jdbc = new JdbcTemplate(dataSource);
 
+        System.out.println("******************************CALL 1 ************************************************");
         List<Director> directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors",
                 (rs -> {
                     Director director = new Director();
@@ -38,8 +39,62 @@ public class Main {
         directors.stream()
                 .forEach(d -> System.out.println(d));
 
+        System.out.println("******************************CALL 2 ************************************************");
         directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
                 new Object[]{"Stephen"},
+                (rs -> {
+                    Director director = new Director();
+                    director.setId(rs.getInt("id"));
+                    director.setName(rs.getString("name"));
+                    director.setSurname(rs.getString("surname"));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
+                    return director;
+                })
+        );
+
+        directors.stream()
+                .forEach(d -> System.out.println(d));
+
+
+        System.out.println("******************************CALL 3 ************************************************");
+        Director directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors",
+                (rs -> {
+                    Director director = new Director();
+                    director.setId(rs.getInt("id"));
+                    director.setName(rs.getString("name"));
+                    director.setSurname(rs.getString("surname"));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
+                    return director;
+                })
+        );
+        System.out.println(directorOne);
+
+
+        System.out.println("******************************CALL 4 ************************************************");
+        directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
+                new Object[]{"Stephen"},
+                (rs -> {
+                    Director director = new Director();
+                    director.setId(rs.getInt("id"));
+                    director.setName(rs.getString("name"));
+                    director.setSurname(rs.getString("surname"));
+                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
+                    return director;
+                })
+        );
+        System.out.println(directorOne);
+
+        jdbc.update(
+                "INSERT INTO directors (name, surname, birth_date) VALUES (?,?,?)",
+                new Object[]{"Stephen", "Spielberg", LocalDateTime.parse("1954-01-01T00:00")}
+        );
+
+        jdbc.update(
+                "DELETE FROM directors WHERE id=?",
+                new Object[]{15}
+        );
+
+        directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors",
                 (rs -> {
                     Director director = new Director();
                     director.setId(rs.getInt("id"));
@@ -54,41 +109,6 @@ public class Main {
         directors.stream()
                 .forEach(d -> System.out.println(d));
 
-
-        Director directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors",
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    //System.out.println(director);
-                    return director;
-                })
-        );
-        System.out.println("******************************************************************************");
-        System.out.println(directorOne);
-
-
-        directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
-                new Object[]{"Stephen"},
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    //System.out.println(director);
-                    return director;
-                })
-        );
-        System.out.println("******************************************************************************");
-        System.out.println(directorOne);
-
-        jdbc.update(
-                "INSERT INTO directors (name, surname, birth_date) VALUES (?,?,?)",
-                new Object[]{"Stephen", "Spielberg", LocalDateTime.parse("1954-01-01T00:00")}
-        );
 
 
         //public <T> List<T> query(String sql, Object[] params, RowMapper<T> mapper)

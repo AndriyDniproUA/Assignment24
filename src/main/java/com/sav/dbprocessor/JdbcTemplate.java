@@ -45,13 +45,17 @@ public class JdbcTemplate {
         return query(sql,params,mapper);
     }
 
-    public<T> T queryOne(String sql, Object[] params, RowMapper<T> mapper){
-        return query(sql,params,mapper).get(0);
+    public<T> T queryOne(String sql, Object[] params, RowMapper<T> mapper) {
+        if (query(sql, params, mapper).size() != 0) {
+            return query(sql, params, mapper).get(0);
+        } else {
+            return null;
+        }
     }
 
     public<T> T queryOne(String sql, RowMapper<T> mapper){
         Object[] params = new Object[]{};
-        return query(sql,params,mapper).get(0);
+        return queryOne(sql,params,mapper);
     }
 
     //use for INSERT, UPDATE, DELETE
