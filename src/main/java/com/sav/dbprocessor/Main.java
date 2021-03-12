@@ -26,14 +26,7 @@ public class Main {
 
         System.out.println("******************************CALL 1 ************************************************");
         List<Director> directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors",
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    return director;
-                })
+                new BeanPropertyRowMapper2<>(Director.class)
         );
 
         directors.stream()
@@ -42,14 +35,7 @@ public class Main {
         System.out.println("******************************CALL 2 ************************************************");
         directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
                 new Object[]{"Stephen"},
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    return director;
-                })
+                new BeanPropertyRowMapper<>(Director.class)
         );
 
         directors.stream()
@@ -58,14 +44,7 @@ public class Main {
 
         System.out.println("******************************CALL 3 ************************************************");
         Director directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors",
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    return director;
-                })
+                new BeanPropertyRowMapper<>(Director.class)
         );
         System.out.println(directorOne);
 
@@ -73,14 +52,7 @@ public class Main {
         System.out.println("******************************CALL 4 ************************************************");
         directorOne = jdbc.queryOne("SELECT id, name, surname, birth_date FROM directors WHERE name=?",
                 new Object[]{"Stephen"},
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    return director;
-                })
+                new BeanPropertyRowMapper<>(Director.class)
         );
         System.out.println(directorOne);
 
@@ -95,27 +67,18 @@ public class Main {
         );
 
         directors = jdbc.query("SELECT id, name, surname, birth_date FROM directors",
-                (rs -> {
-                    Director director = new Director();
-                    director.setId(rs.getInt("id"));
-                    director.setName(rs.getString("name"));
-                    director.setSurname(rs.getString("surname"));
-                    director.setBirthDate(rs.getObject("birth_date", LocalDateTime.class));
-                    return director;
-                })
+                new BeanPropertyRowMapper<>(Director.class)
         );
 
         System.out.println("******************************************************************************");
         directors.stream()
                 .forEach(d -> System.out.println(d));
-
-
-
-        //public <T> List<T> query(String sql, Object[] params, RowMapper<T> mapper)
-        //public <T> List<T> query(String sql, RowMapper<T> mapper)
-        //public<T> T queryOne(String sql, Object[] params, RowMapper<T> mapper)
-        //public<T> T queryOne(String sql, RowMapper<T> mapper)
-        //public void update(String sql, Object[] params)
-        //public void update(String sql)
     }
 }
+
+//        public <T> List<T> query(String sql, Object[] params, RowMapper<T> mapper)
+//        public <T> List<T> query(String sql, RowMapper<T> mapper)
+//        public<T> T queryOne(String sql, Object[] params, RowMapper<T> mapper)
+//        public<T> T queryOne(String sql, RowMapper<T> mapper)
+//        public void update(String sql, Object[] params)
+//        public void update(String sql)
